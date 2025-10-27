@@ -1,3 +1,5 @@
+package finalProject;
+
 public class Student extends Person implements CourseInterface {
     private Schedule schedule = new Schedule();
 

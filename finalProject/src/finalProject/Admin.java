@@ -1,3 +1,5 @@
+package finalProject;
+
 public class Admin extends Person implements CourseInterface {
     @Override
     public void addCourse(Course course) {

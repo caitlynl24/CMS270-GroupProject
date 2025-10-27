@@ -1,3 +1,5 @@
+package finalProject;
+
 public abstract class Person {
     protected String name;
     protected String id;

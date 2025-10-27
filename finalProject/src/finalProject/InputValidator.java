@@ -1,3 +1,5 @@
+package finalProject;
+
 public class InputValidator {
     public static boolean validateCourseId(String id) {
         return id != null && id.matches("[A-Z]{3}\\d{3}");
