@@ -138,6 +138,10 @@ public class Main {
                     String day = scanner.nextLine();
                     System.out.println("Enter Time (HH:MM): ");
                     String time = scanner.nextLine();
+                    System.out.println("Enter Credits: ");
+                    int credits = Integer.parseInt(scanner.nextLine());
+                    System.out.println("Enter Capacity: ");
+                    int capacity = Integer.parseInt(scanner.nextLine());
 
                     if(!InputValidator.validateCourseId(idInput)) {
                         System.out.println("Invalid Course ID format (use e.g., CMS101).");
@@ -148,7 +152,7 @@ public class Main {
                         break;
                     }
 
-                    Course newCourse = new Course(idInput, nameInput, instructor, day, time);
+                    Course newCourse = new Course(idInput, nameInput, instructor, day, time, credits, capacity);
                     system.addCourse(newCourse);
                     admin.addCourse(newCourse);
                     break;
