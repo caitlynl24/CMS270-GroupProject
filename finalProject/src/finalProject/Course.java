@@ -53,7 +53,7 @@ public class Course {
         return credits;
     }
 
-        public String getCourseId() {
+    public String getCourseId() {
         return courseId;
     }
 
