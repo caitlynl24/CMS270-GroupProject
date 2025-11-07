@@ -7,17 +7,19 @@ public class Course {
     private String courseName;
     private String instructor;
     private String day;
-    private String time;
+    private String startTime;
+    private String endTime;
     private int credits;
     private int capacity;
     private HashSet<String> enrolledStudents = new HashSet<>();
 
-    public Course(String courseId, String courseName, String instructor, String day, String time, int credits, int capacity) {
+    public Course(String courseId, String courseName, String instructor, String day, String startTime, String endTime, int credits, int capacity) {
         this.courseId = courseId;
         this.courseName = courseName;
         this.instructor = instructor;
         this.day = day;
-        this.time = time;
+        this.startTime = startTime;
+        this.endTime = endTime;
         this.credits = credits;
         this.capacity = capacity;
     }
@@ -67,8 +69,12 @@ public class Course {
         return day;
     }
 
-    public String getTime() {
-        return time;
+    public String getStartTime() {
+        return startTime;
+    }
+
+    public String getEndTime() {
+        return endTime;
     }
 
     public void setCourseId(String courseId) {
@@ -87,12 +93,16 @@ public class Course {
         this.day = day;
     }
 
-    public void setTime(String time) {
-        this.time = time;
+    public void setStartTime(String startTime) {
+        this.startTime = startTime;
+    }
+
+    public void setEndTime(String endTime) {
+        this.endTime = endTime;
     }
 
     @Override
     public String toString() {
-        return String.format("%s - %s (%s), %s at %s, %d credits, Seats left: %d", courseId, courseName, instructor, day, time, credits, seatsLeft());
+        return String.format("%s - %s (%s), %s %s-%s, %d credits, Seats left: %d", courseId, courseName, instructor, day, startTime, endTime, credits, seatsLeft());
     }
 }
