@@ -9,6 +9,11 @@ public class InputValidator {
         return time != null && time.matches("([01]?\\d|2[0-3]):[0-5]\\d");
     }
 
+    public static boolean validateTimeRange(String start, String end) {
+        if(!validateTimeFormat(start) || !validateTimeFormat(end)) return false;
+        return start.compareTo(end) < 0; //End must be after start
+    }
+
     public static boolean validateNonEmpty(String input) {
         return input != null && !input.trim().isEmpty();
     }
