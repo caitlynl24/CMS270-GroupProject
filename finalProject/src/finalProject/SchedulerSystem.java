@@ -1,40 +1,70 @@
 package finalProject;
 
-import java.util.ArrayList;
-import java.util.Random;
+import java.util.*;
 
 public class SchedulerSystem {
+    private static final int ID_LENGTH = 6;
+
     private ArrayList<Student> students = new ArrayList<>();
     private ArrayList<Admin> admins = new ArrayList<>();
     private ArrayList<Course> courses = new ArrayList<>();
+    private HashMap<String, String> instructorDepartments = new HashMap<>();
 
     public void loadSampleData() {
-        admins.add(new Admin());
-        students.add(new Student());
-
         Random rand = new Random();
-        
-        //50 unique courses
-        String[] prefixes = {"CSE", "MAT", "PHY", "ENG", "HIS", "BIO", "CHE", "ECO", "PSY", "CMS"};
+
+        //Department prefixes and course names
+        Map<String, String[]> deptTitles = Map.of(
+            "CSE", new String[]{"Intro to Programming", "Data Structures", "Algorithms"},
+            "MAT", new String[]{"Calculus I", "Linear Algebra", "Discrete Math"},
+            "PHY", new String[]{"Physics I", "Thermodynamics", "Quantum Mechanics"},
+            "ENG", new String[]{"English Composition", "World Literature", "Creative Writing"},
+            "HIS", new String[]{"World History", "American History", "Modern Europe"},
+            "BIO", new String[]{"Biology I", "Genetics", "Ecology"},
+            "CHE", new String[]{"Chemistry I", "Organic Chemistry", "Physical Chemistry"},
+            "ECO", new String[]{"Microeconomics", "Macroeconomics", "Econometrics"},
+            "PSY", new String[]{"Intro to Psychology", "Cognitive Psychology", "Behavioral Science"},
+            "CMS", new String[]{"Intro to Communication", "Public Speaking", "Media Studies"}
+        );
+
+        String[] prefixes = deptTitles.keySet().toArray(new String[0]);
         String[] instructors = {"Dr. Smith", "Dr. Jones", "Dr. Brown", "Dr. Taylor", "Dr. Wilson"};
-        String[] days = {"Monday", "Tuesday", "Wednesday", "Thursday", "Friday"};
-        String[] times = {"8:00", "9:00", "10:00", "11:00", "12:00", "1:00", "2:00"};
+        String[] days = {"M", "T", "W", "R", "F"};
+        String[] times = {"08:00", "09:00", "10:00", "11:00", "12:00", "01:00", "02:00"};
 
-        for (int i = 1; i <= 50; i++) {
-            //Randomly pick a department prefix
+        for (int i = 1; i <= 30; i++) {
             String prefix = prefixes[rand.nextInt(prefixes.length)];
+            String courseId = prefix + (100 + i);
+            String[] titles = deptTitles.get(prefix);
+            String title = titles[rand.nextInt(titles.length)];
+            String instructor = instructors[rand.nextInt(instructors.length)];
+            String day = days[rand.nextInt(days.length)];
+            String time = times[rand.nextInt(times.length)];
 
-            //Generate realistic course number (101, 201, 301, etc.)
-            int courseLevel = (rand.nextInt(4) + 1) * 100 + (rand.nextInt(5) + 1);
-            String courseId = String.format("%s%d", prefix, courseLevel);
-            String courseName = "Course " + i;
+            //Enforce one department per instructor
+            if(instructorDepartments.containsKey(instructor)) {
+                String dept = instructorDepartments.get(instructor);
+                if(!dept.equals(prefix)) continue; //skip course
+            } else {
+                instructorDepartments.put(instructor, prefix);
+            }
 
-            //Randomly assign instructor, day, and time
-            String instructor = instructors[i % instructors.length];
-            String day = days[i % days.length];
-            String time = times[i % times.length];
+            //Prevent instructor from teaching two courses at the same time
+            boolean conflict = false;
+            for(Course c : courses) {
+                if(c.getInstructor().equals(instructor) &&
+                c.getDay().equals(day) &&
+                c.getTime().equals(time)) {
+                    conflict = true;
+                    break;
+                }
+            }
+            if(conflict) continue;
 
-            courses.add(new Course(courseId, courseName, instructor, day, time));
+            int credits = 3 + rand.nextInt(2);
+            int capacity = 5 + rand.nextInt(16);
+
+            courses.add(new Course(courseId, title, instructor, day, time, credits, capacity));
         }
     }
 
@@ -70,11 +100,39 @@ public class SchedulerSystem {
     }
 
     public void addStudent(Student s) {
-        students.add(s);
+        try {
+            if(s.getId().length() != ID_LENGTH) {
+                throw new IllegalArgumentException("Invalid ID length.");
+            }
+            for(Student existing : students) {
+                if(existing.getId().equals(s.getId())) {
+                    throw new DuplicatedIdException("Duplicate student ID: " + s.getId());
+                }
+            }
+            students.add(s);
+        } catch(DuplicatedIdException e) {
+            System.out.println("Error: " + e.getMessage());
+        } finally {
+            System.out.println("Student ID validation complete.");
+        }
     }
 
     public void addAdmin(Admin a) {
-        admins.add(a);
+        try {
+            if(a.getId().length() != ID_LENGTH) {
+                throw new IllegalArgumentException("Invalid ID length.");
+            }
+            for(Admin existing : admins) {
+                if(existing.getId().equals(a.getId())) {
+                    throw new DuplicatedIdException("Duplicate admin ID: " + a.getId());
+                }
+            }
+            admins.add(a);
+        } catch(DuplicatedIdException e) {
+            System.out.println("Error: " + e.getMessage());
+        } finally {
+            System.out.println("Admin ID validation complete.");
+        }
     }
 
     public void addCourse(Course c) {
