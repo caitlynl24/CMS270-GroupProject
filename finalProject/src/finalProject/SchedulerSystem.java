@@ -39,7 +39,10 @@ public class SchedulerSystem {
             String title = titles[rand.nextInt(titles.length)];
             String instructor = instructors[rand.nextInt(instructors.length)];
             String day = days[rand.nextInt(days.length)];
-            String time = times[rand.nextInt(times.length)];
+
+            String start = times[rand.nextInt(times.length)];
+            int startHour = Integer.parseInt(start.split(":")[0]);
+            String end = String.format("%02d:00", Math.min(startHour + 1, 23));
 
             //Enforce one department per instructor
             if(instructorDepartments.containsKey(instructor)) {
@@ -54,7 +57,7 @@ public class SchedulerSystem {
             for(Course c : courses) {
                 if(c.getInstructor().equals(instructor) &&
                 c.getDay().equals(day) &&
-                c.getTime().equals(time)) {
+                (c.getEndTime().compareTo(start) <= 0 || c.getStartTime().compareTo(end) >= 0)) {
                     conflict = true;
                     break;
                 }
@@ -64,7 +67,7 @@ public class SchedulerSystem {
             int credits = 3 + rand.nextInt(2);
             int capacity = 5 + rand.nextInt(16);
 
-            courses.add(new Course(courseId, title, instructor, day, time, credits, capacity));
+            courses.add(new Course(courseId, title, instructor, day, start, end, credits, capacity));
         }
     }
 
