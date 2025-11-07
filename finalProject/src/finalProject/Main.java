@@ -136,8 +136,10 @@ public class Main {
                     String instructor = scanner.nextLine();
                     System.out.println("Enter Day: ");
                     String day = scanner.nextLine();
-                    System.out.println("Enter Time (HH:MM): ");
-                    String time = scanner.nextLine();
+                    System.out.println("Enter Start Time (HH:MM): ");
+                    String start = scanner.nextLine();
+                    System.out.println("Enter End Time (HH:MM): ");
+                    String end = scanner.nextLine();
                     System.out.println("Enter Credits: ");
                     int credits = Integer.parseInt(scanner.nextLine());
                     System.out.println("Enter Capacity: ");
@@ -147,12 +149,12 @@ public class Main {
                         System.out.println("Invalid Course ID format (use e.g., CMS101).");
                         break;
                     }
-                    if(!InputValidator.validateTimeFormat(time)) {
-                        System.out.println("Invalid time format (use HH:MM).");
+                    if(!InputValidator.validateTimeRange(start, end)) {
+                        System.out.println("Invalid time range (must be HH:MM-HH:MM, end after start).");
                         break;
                     }
 
-                    Course newCourse = new Course(idInput, nameInput, instructor, day, time, credits, capacity);
+                    Course newCourse = new Course(idInput, nameInput, instructor, day, start, end, credits, capacity);
                     system.addCourse(newCourse);
                     admin.addCourse(newCourse);
                     break;
