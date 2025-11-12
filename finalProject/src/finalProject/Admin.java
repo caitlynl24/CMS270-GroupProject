@@ -1,6 +1,8 @@
 package finalProject;
 
 public class Admin extends Person implements CourseInterface {
+	
+	// Override the CourseInterface functions for specific admin use
     @Override
     public void addCourse(Course course) {
         System.out.println("Admin added course: " + course);
