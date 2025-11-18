@@ -4,6 +4,7 @@ import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) {
+    	//new SchedulerView();
         SchedulerSystem system = new SchedulerSystem();
         system.loadSampleData();
 
