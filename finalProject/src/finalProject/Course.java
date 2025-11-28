@@ -2,21 +2,61 @@ package finalProject;
 
 import java.util.HashSet;
 
+/**
+ * Represents a university course with metadta such as course ID,
+ * instructor, meeting days, times, credit value, and capacity.
+ * 
+ * <p>Each course keeps track of enrolled students by their IDs.
+ * The class provides helper methods for time conflict checks, 
+ * determining course fullness, and managing registration lists.</p>
+ */
 public class Course {
 	
-	// Initialization of Course class variables
+	// -------------- Core Course Fields --------------
+
+    // Unique course ID following format (e.g., CMS230).
     private String courseId;
+
+    // Human-readable title of the course.
     private String courseName;
+
+    // Instructor assigned to the course.
     private String instructor;
+
+    // Meeting days (e.g., "MWF", "TR").
     private String day;
+
+    // Start time in 24-hour HH:mm format.
     private String startTime;
+
+    // End time in 24-hour HH:mm format.
     private String endTime;
+
+    // Number of academic credits assigned to this course.
     private int credits;
+
+    // Maximum number of enrollments allowed.
     private int capacity;
+
+    // Set of student IDs currently enrolled in this course.
     private HashSet<String> enrolledStudents = new HashSet<>();
 
-    // Constructor function for course objects
-    public Course(String courseId, String courseName, String instructor, String day, String startTime, String endTime, int credits, int capacity) {
+    /**
+     * Constructs a new Course with all required properties.
+     * 
+     * @param courseId unique identifier (AAA999)
+     * @param courseName course title
+     * @param instructor instructor name
+     * @param day day pattern (MWF, TR)
+     * @param startTime start time (24h format)
+     * @param endTime end time (24h format)
+     * @param credits academic credits
+     * @param capacity maximum seats
+     */
+    public Course(String courseId, String courseName, String instructor, 
+                String day, String startTime, String endTime, 
+                int credits, int capacity) {
+
         this.courseId = courseId;
         this.courseName = courseName;
         this.instructor = instructor;
@@ -27,18 +67,28 @@ public class Course {
         this.capacity = capacity;
     }
 
-    // Function checks if specific course is full and returns true or false accordingly
+    // -------------- Enrollment Logic --------------
+
+    /**
+     * @return true if the course is currently at capacity
+     */
     public boolean isFull() {
         return enrolledStudents.size() >= capacity;
     }
 
-    // Function returns the amount of open seats left in a course as an integer
+    /**
+     * @return number of available seats remaining
+     */
     public int seatsLeft() {
         return capacity - enrolledStudents.size();
     }
 
-    // Function checks if course is full. If not, adds the student using the student ID
-    // If full, alerts the user the action was not completed and the course is full
+    /**
+     * Attempts to enroll a student by ID.
+     * 
+     * @param studentId ID of the student
+     * @return true if added successfully, false if the course is full
+     */
     public boolean enrollStudent(String studentId) {
         if(isFull()) {
             System.out.println("Course " + courseId + " is full.");
@@ -48,84 +98,49 @@ public class Course {
         return true;
     }
 
-    // Function removes a student from a course using the student ID
+    /**
+     * Removes a student from the course.
+     * 
+     * @param studentId student ID to remove
+     */
     public void removeStudent(String studentId) {
         enrolledStudents.remove(studentId);
     }
 
-    // Uses a substring in the course ID to return the department of specified course
+    /**
+     * Extracts department prefix from the course ID.
+     * Example: CMS230 -> CMS
+     * 
+     * @return department prefix
+     */
     public String getDepartment() {
         return courseId.substring(0, 3);
     }
 
-    // Getter method for credits variable
-    public int getCredits() {
-        return credits;
-    }
+    // -------------- Getters --------------
 
-    // Getter method for Course ID variable
-    public String getCourseId() {
-        return courseId;
-    }
+    public int getCredits() { return credits; }
+    public String getCourseId() { return courseId; }
+    public String getCourseName() { return courseName; }
+    public String getInstructor() { return instructor; }
+    public String getDay() { return day; }
+    public String getStartTime() { return startTime; }
+    public String getEndTime() { return endTime; }
+
+    // -------------- Setters --------------
     
-    // Getter method for Course Name variable
-    public String getCourseName() {
-        return courseName;
-    }
-    
-    // Getter method for Instructor variable
-    public String getInstructor() {
-        return instructor;
-    }
+    public void setCourseId(String courseId) { this.courseId = courseId; }
+    public void setCourseName(String courseName) { this.courseName = courseName; }
+    public void setInstructor(String instructor) { this.instructor = instructor; }
+    public void setDay(String day) { this.day = day; }
+    public void setStartTime(String startTime) { this.startTime = startTime; }
+    public void setEndTime(String endTime) { this.endTime = endTime; }
 
-    // Getter method for the day variable
-    public String getDay() {
-        return day;
-    }
-
-    // Getter method for the start time of a specified course
-    public String getStartTime() {
-        return startTime;
-    }
-    
-    // Getter method for the end time of a specified course
-    public String getEndTime() {
-        return endTime;
-    }
-
-    // Setter method for Course ID variable
-    public void setCourseId(String courseId) {
-        this.courseId = courseId;
-    }
-
-    // Setter method for Course name variable
-    public void setCourseName(String courseName) {
-        this.courseName = courseName;
-    }
-
-    // Setter method for instructor variable
-    public void setInstructor(String instructor) {
-        this.instructor = instructor;
-    }
-
-    // Setter method for the day variable
-    public void setDay(String day) {
-        this.day = day;
-    }
-
-    // Setter method for the start time of a specified course
-    public void setStartTime(String startTime) {
-        this.startTime = startTime;
-    }
-
-    // Setter method for the end time of a specified course
-    public void setEndTime(String endTime) {
-        this.endTime = endTime;
-    }
-
-    // Converts course information to a user-friendly and readable format
     @Override
     public String toString() {
-        return String.format("%s - %s (%s), %s %s-%s, %d credits, Seats left: %d", courseId, courseName, instructor, day, startTime, endTime, credits, seatsLeft());
+        return String.format(
+            "%s - %s (%s), %s %s-%s, %d credits, Seats left: %d", 
+            courseId, courseName, instructor, day, 
+            startTime, endTime, credits, seatsLeft());
     }
 }
