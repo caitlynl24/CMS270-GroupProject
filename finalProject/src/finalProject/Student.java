@@ -3,6 +3,10 @@ package finalProject;
 public class Student extends Person implements CourseInterface {
     private Schedule schedule = new Schedule();
 
+    public Schedule getSchedule() {
+        return schedule;
+    }
+
     public Student() {}
     public Student(String name, String id) {
         super(name, id);
