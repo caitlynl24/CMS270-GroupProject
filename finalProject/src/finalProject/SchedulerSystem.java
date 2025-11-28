@@ -36,7 +36,7 @@ public class SchedulerSystem {
 
         int courseCounter = 100;
 
-        while (courses.size() < 50) {
+        while (courses.size() < 100) {
             String prefix = prefixes[rand.nextInt(prefixes.length)];
             String courseId = prefix + courseCounter++;
             String[] titles = deptTitles.get(prefix);

@@ -30,9 +30,7 @@ public class SchedulerController {
 
 			Student student = system.findStudent(id);
 			if(student == null) {
-				student = new Student();
-				student.setId(id);
-				student.setName(name);
+				student = new Student(name, id);
 				system.addStudent(student);
 			}
 
@@ -60,18 +58,14 @@ public class SchedulerController {
 
 	private void showStudentPanel(Student student) {
 		JPanel panel = new JPanel(new BorderLayout());
-
 		JLabel header = new JLabel("Student: " + student.getName(), SwingConstants.CENTER);
 		panel.add(header, BorderLayout.NORTH);
 
-		DefaultListModel<String> courseModel = new DefaultListModel<>();
-		JList<String> courseList = new JList<>(courseModel);
-		
-		for (Course c : system.getCourses()) {
-			courseModel.addElement(c.toString());
-		}
+		CourseTableModel tableModel = new CourseTableModel(system.getCourses());
+		JTable courseTable = new JTable(tableModel);
+		courseTable.setAutoCreateRowSorter(true); //Enable sorting
 
-		panel.add(new JScrollPane(courseList), BorderLayout.CENTER);
+		panel.add(new JScrollPane(courseTable), BorderLayout.CENTER);
 
 		JPanel buttons = new JPanel();
 		JButton addBtn = new JButton("Add Course");
@@ -83,26 +77,33 @@ public class SchedulerController {
 		buttons.add(removeBtn);
 		buttons.add(scheduleBtn);
 		buttons.add(backBtn);
-
 		panel.add(buttons, BorderLayout.SOUTH);
 
 		view.getMainPanel().add(panel, "STUDENT");
 		view.showPanel("STUDENT");
 
 		addBtn.addActionListener(e -> {
-			String courseId = JOptionPane.showInputDialog("Enter Course ID:");
-			Course c = system.findCourse(courseId);
-
-			if (c != null) student.addCourse(c);
-			else JOptionPane.showMessageDialog(null, "Course Not Found");
+			int selectedRow = courseTable.getSelectedRow();
+			if (selectedRow != -1) {
+				int modelRow = courseTable.convertRowIndexToModel(selectedRow);
+				Course selectedCourse = tableModel.getCourseAt(modelRow);
+				student.addCourse(selectedCourse);
+				tableModel.fireTableDataChanged();
+			} else {
+				JOptionPane.showMessageDialog(view, "Please select a course to add.");
+			}
 		});
 
 		removeBtn.addActionListener(e -> {
-			String courseId = JOptionPane.showInputDialog("Enter Course ID:");
-			Course c = system.findCourse(courseId);
-
-			if (c != null) student.removeCourse(c);
-			else JOptionPane.showMessageDialog(null, "Course Not Found");
+			int selectedRow = courseTable.getSelectedRow();
+			if (selectedRow != -1) {
+				int modelRow = courseTable.convertRowIndexToModel(selectedRow);
+				Course selectedCourse = tableModel.getCourseAt(modelRow);
+				student.removeCourse(selectedCourse);
+				tableModel.fireTableDataChanged();
+			} else {
+				JOptionPane.showMessageDialog(view, "Please select a course to remove.");
+			}
 		});
 
 		scheduleBtn.addActionListener(e -> {
@@ -110,7 +111,7 @@ public class SchedulerController {
 			for (Course c : student.getSchedule().getCourses()) {
 				sb.append(c).append("\n");
 			}
-			JOptionPane.showMessageDialog(null, sb.toString(), "Your Schedule", JOptionPane.INFORMATION_MESSAGE);
+			JOptionPane.showMessageDialog(view, sb.toString(), "My Schedule", JOptionPane.INFORMATION_MESSAGE);
 		});
 
 		backBtn.addActionListener(e -> view.showPanel("HOME"));
@@ -121,14 +122,11 @@ public class SchedulerController {
 		JLabel header = new JLabel("Admin: " + admin.getName(), SwingConstants.CENTER);
 		panel.add(header, BorderLayout.NORTH);
 
-		DefaultListModel<String> courseModel = new DefaultListModel<>();
-		JList<String> courseList = new JList<>(courseModel);
-		
-		for (Course c : system.getCourses()) {
-			courseModel.addElement(c.toString());
-		}
+		CourseTableModel tableModel = new CourseTableModel(system.getCourses());
+		JTable courseTable = new JTable(tableModel);
+		courseTable.setAutoCreateRowSorter(true); //Enable sorting
 
-		panel.add(new JScrollPane(courseList), BorderLayout.CENTER);
+		panel.add(new JScrollPane(courseTable), BorderLayout.CENTER);
 
 		JPanel buttons = new JPanel();
 		JButton addBtn = new JButton("Add Course");
@@ -138,31 +136,29 @@ public class SchedulerController {
 		buttons.add(addBtn);
 		buttons.add(removeBtn);
 		buttons.add(backBtn);
-
 		panel.add(buttons, BorderLayout.SOUTH);
 
 		view.getMainPanel().add(panel, "ADMIN");
 		view.showPanel("ADMIN");
 
-		addBtn.addActionListener(e -> showAddCourseDialog(admin, courseModel));
-
+		addBtn.addActionListener(e -> showAddCourseDialog(admin, tableModel));
 		removeBtn.addActionListener(e -> {
-			String id = JOptionPane.showInputDialog("Enter Course ID:");
-			Course c = system.findCourse(id);
-
-			if (c != null) {
-				system.removeCourse(c);
-				admin.removeCourse(c);
-				courseModel.removeElement(c.toString());
+			int selectedRow = courseTable.getSelectedRow();
+			if (selectedRow != -1) {
+				int modelRow = courseTable.convertRowIndexToModel(selectedRow);
+				Course selectedCourse = tableModel.getCourseAt(modelRow);
+				system.removeCourse(selectedCourse);
+				admin.removeCourse(selectedCourse);
+				tableModel.removeCourse(selectedCourse);
 			} else {
-				JOptionPane.showMessageDialog(null, "Course Not Found");
+				JOptionPane.showMessageDialog(view, "Please select a course to remove.");
 			}
 		});
 
 		backBtn.addActionListener(e -> view.showPanel("HOME"));
 	}
 
-	private void showAddCourseDialog(Admin admin, DefaultListModel<String> model) {
+	private void showAddCourseDialog(Admin admin, CourseTableModel tableModel) {
 		JTextField idField = new JTextField();
 		JTextField nameField = new JTextField();
 		JTextField instrField = new JTextField();
@@ -199,7 +195,7 @@ public class SchedulerController {
 
 			admin.addCourse(c);
 			system.addCourse(c);
-			model.addElement(c.toString());
+			tableModel.addCourse(c);
 		}
 	}
 }
