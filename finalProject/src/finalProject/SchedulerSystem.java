@@ -14,27 +14,31 @@ public class SchedulerSystem {
         Random rand = new Random();
 
         //Department prefixes and course names
-        Map<String, String[]> deptTitles = Map.of(
-            "CSE", new String[]{"Intro to Programming", "Data Structures", "Algorithms"},
-            "MAT", new String[]{"Calculus I", "Linear Algebra", "Discrete Math"},
-            "PHY", new String[]{"Physics I", "Thermodynamics", "Quantum Mechanics"},
-            "ENG", new String[]{"English Composition", "World Literature", "Creative Writing"},
-            "HIS", new String[]{"World History", "American History", "Modern Europe"},
-            "BIO", new String[]{"Biology I", "Genetics", "Ecology"},
-            "CHE", new String[]{"Chemistry I", "Organic Chemistry", "Physical Chemistry"},
-            "ECO", new String[]{"Microeconomics", "Macroeconomics", "Econometrics"},
-            "PSY", new String[]{"Intro to Psychology", "Cognitive Psychology", "Behavioral Science"},
-            "CMS", new String[]{"Intro to Communication", "Public Speaking", "Media Studies"}
-        );
+        Map<String, String[]> deptTitles = new HashMap<>();
+            deptTitles.put("CMS", new String[]{"Intro to Computer Science", "Prog & Software Development", "Computer Org & Architecture", "Data Structures and Algorithms", "Artificial Intelligence", "Database Design & Dev"});
+            deptTitles.put("MAT", new String[]{"Statistical Reasoning", "Precalculus Mathematics", "Intro to Discrete Mathematics", "Linear Algebra", "Calculus I", "Calculus II", "Calculus III"});
+            deptTitles.put("ENG", new String[]{"British Romance", "Shakespeare", "Oscar Wilde", "Asian American Stories", "Intro to Creative Writing", "Legal Writing", "Language Studies", "Writing for Publication"});
+            deptTitles.put("HIS", new String[]{"China's Cultural Rev.", "History of a City: Ancient Athens", "Crusades", "Europe: Revolt, Nation, Empire", "History of a City: Cape Town"});
+            deptTitles.put("BIO", new String[]{"Oceanography", "Microbiology", "Genetics", "Plant Physiology", "Molecular Biology", "General Biology II", "Human Physiology"});
+            deptTitles.put("CHM", new String[]{"Chemistry I", "Chemistry II", "Organic Chemistry I", "Organic Chemistry II", "Physical Chemistry I"});
+            deptTitles.put("BUS", new String[]{"Micro & Macro Economics", "Statistics for Business", "Global Entrepreneurship", "Financial Statement Analysis", "Investments", "Family Business Planning"});
+            deptTitles.put("PSY", new String[]{"Intro to Psychology", "Perspectives in Psychology II", "Careers in Psychology", "Adolescent Development", "Sports Psych", "Organization Behavior", "Psychotherapy"});
+            deptTitles.put("PHI", new String[]{"Ethics", "Intro to Philosophy", "Philosophy of Education", "Medical Ethics", "Feminist Theory", "Religion and Food", "Intro to Formal Logic"});
+            deptTitles.put("ART", new String[]{"Two-Dimensional Foundations", "Three-Dimensional Foundations", "Sculpture II", "Painting II", "Graphic Design I", "Painting I"});
+            deptTitles.put("COM", new String[]{"Intro Communication Studies", "Interpersonal Communication", "Mass Media & Society", "Public Speaking", "Persuasion", "Legal Communication", "Listening", "Health Communication"});
+            deptTitles.put("MUS", new String[]{"Theory II", "Keyboard Harmony II", "Jazz Vision", "Song Writing I", "Recording Practicum", "Music Technology II", "Composition Practicum", "Conducting Practicum"});
+            deptTitles.put("THE", new String[]{"Intro to Technical Theatre", "Acting I: Fundamentals", "Script Analysis", "History of Theatre II", "Mainstage Design/Tech", "Theatre Prod: Performance"});
 
         String[] prefixes = deptTitles.keySet().toArray(new String[0]);
-        String[] instructors = {"Dr. Smith", "Dr. Jones", "Dr. Brown", "Dr. Taylor", "Dr. Wilson"};
+        String[] instructors = {"D Roe", "A Hope", "A Fearing", "P Rogers", "V Alves", "T Loch", "M Fuse", "E Yook", "M Garcia", "R Winter", "D Myers", "V Summet", "M Rice", "Y Bing", "J Jones", "B Boles", "C Strom", "K Shi", "S Boyd", "M Anderson", "M Breckling", "S Kim", "M McLaren", "J Liu", "J Queen", "L Held", "T Staff", "M DiQuattro"};
         String[] days = {"M", "T", "W", "R", "F"};
-        String[] times = {"08:00", "09:00", "10:00", "11:00", "12:00", "01:00", "02:00"};
+        String[] times = {"08:00", "09:00", "10:00", "11:00", "12:00", "01:00", "02:00", "03:00", "04:00"};
 
-        for (int i = 1; i <= 30; i++) {
+        int courseCounter = 100;
+
+        while (courses.size() < 50) {
             String prefix = prefixes[rand.nextInt(prefixes.length)];
-            String courseId = prefix + (100 + i);
+            String courseId = prefix + courseCounter++;
             String[] titles = deptTitles.get(prefix);
             String title = titles[rand.nextInt(titles.length)];
             String instructor = instructors[rand.nextInt(instructors.length)];
@@ -47,7 +51,7 @@ public class SchedulerSystem {
             //Enforce one department per instructor
             if(instructorDepartments.containsKey(instructor)) {
                 String dept = instructorDepartments.get(instructor);
-                if(!dept.equals(prefix)) continue; //skip course
+                if(!dept.equals(prefix)) continue; //Skip course
             } else {
                 instructorDepartments.put(instructor, prefix);
             }
@@ -68,10 +72,12 @@ public class SchedulerSystem {
             if(conflict) continue;
 
             int credits = 3 + rand.nextInt(2);
-            int capacity = 5 + rand.nextInt(16);
+            int capacity = 10 + rand.nextInt(16);
 
             courses.add(new Course(courseId, title, instructor, day, start, end, credits, capacity));
         }
+
+        System.out.println("Loaded " + courses.size() + " courses successfully!");
     }
 
     public ArrayList<Course> getCourses() {
