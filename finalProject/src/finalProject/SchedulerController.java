@@ -16,8 +16,12 @@ public class SchedulerController {
 	private void attachEvents() {
 		view.getStudentButton().addActionListener(e -> {
 			String id = view.getIdField().getText().trim();
-			String name = view.getNameField().getText().trim();
+			if(!id.startsWith("S")) {
+				JOptionPane.showMessageDialog(view, "Student ID must start with 'S'.");
+				return;
+			}
 
+			String name = view.getNameField().getText().trim();
 			if(id.length() != 6) {
 				JOptionPane.showMessageDialog(view, "Student ID must be exactly 6 characters.", "Invalid ID", JOptionPane.ERROR_MESSAGE);
 				return;
@@ -39,8 +43,12 @@ public class SchedulerController {
 
 		view.getAdminButton().addActionListener(e -> {
 			String id = view.getIdField().getText().trim();
+			if(!id.startsWith("A")) {
+				JOptionPane.showMessageDialog(view, "Admin ID must start with 'A'.");
+				return;
+			}
+
 			String name = view.getNameField().getText().trim();
-			
 			if(id.isEmpty() || name.isEmpty()) {
 				JOptionPane.showMessageDialog(view, "Please enter ID and Name.");
 				return;
@@ -193,9 +201,30 @@ public class SchedulerController {
 				Integer.parseInt(capField.getText())
 			);
 
+			if(system.findCourse(c.getCourseId()) != null) {
+				JOptionPane.showMessageDialog(null, "Course ID already exists.");
+				return;
+			}
+
+			for(Course existing : system.getCourses()) {
+				if(existing.getInstructor().equals(c.getInstructor()) &&
+					existing.getDay().equals(c.getDay())) {
+					
+						boolean overlap = !(existing.getEndTime().compareTo(c.getStartTime()) <= 0 || 
+											existing.getStartTime().compareTo(c.getEndTime()) >= 0);
+					
+						if (overlap) {
+							JOptionPane.showMessageDialog(null, "Instructor has a scheduling conflict.");
+							return;
+					}
+				}
+			}
+
 			admin.addCourse(c);
 			system.addCourse(c);
 			tableModel.addCourse(c);
+
+			JOptionPane.showMessageDialog(null, "Course added successfully.");
 		}
 	}
 }

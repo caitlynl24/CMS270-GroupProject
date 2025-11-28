@@ -60,7 +60,11 @@ public class CourseTableModel extends AbstractTableModel{
 
     public void addCourse(Course c) {
         courses.add(c);
-        courses.sort((c1, c2) -> c1.getDepartment().compareTo(c2.getDepartment()));
+        courses.sort((c1, c2) -> {
+            int cmp = c1.getDepartment().compareToIgnoreCase(c2.getDepartment());
+            if(cmp == 0) return c1.getCourseId().compareTo(c2.getCourseId());
+            return cmp;
+        });
         fireTableDataChanged();
     }
 

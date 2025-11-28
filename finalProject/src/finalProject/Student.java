@@ -14,6 +14,11 @@ public class Student extends Person implements CourseInterface {
 
     @Override
     public void addCourse(Course course) {
+        int totalCredits = schedule.getCourses().stream().mapToInt(Course::getCredits).sum();
+        if(totalCredits + course.getCredits() > 16) {
+            System.out.println("Cannot add course. Credit limit (16) exceeded.");
+            return;
+        }
         if(course.isFull()) {
             System.out.println("Cannot add course. It is full.");
             return;
@@ -29,9 +34,13 @@ public class Student extends Person implements CourseInterface {
 
     @Override
     public void removeCourse(Course course) {
-        schedule.removeCourse(course);
-        course.removeStudent(this.id);
-        System.out.println("Course removed.");
+        if(schedule.getCourses().contains(course)) {
+            schedule.removeCourse(course);
+            course.removeStudent(this.id);
+            System.out.println("Course removed.");
+        } else {
+            System.out.println("Cannot remove course. It is not in your schedule.");
+        }
     }
 
     public void viewSchedule() {

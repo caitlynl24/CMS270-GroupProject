@@ -34,19 +34,21 @@ public class SchedulerSystem {
         String[] days = {"MWF", "TR"};
         String[] times = {"08:00", "09:00", "10:00", "11:00", "12:00", "01:00", "02:00", "03:00", "04:00"};
 
-        int courseCounter = 100;
-
         while (courses.size() < 100) {
             String prefix = prefixes[rand.nextInt(prefixes.length)];
-            String courseId = prefix + courseCounter++;
+            int num = 100 + rand.nextInt(900);
+            String courseId = prefix + num;
+
             String[] titles = deptTitles.get(prefix);
             String title = titles[rand.nextInt(titles.length)];
             String instructor = instructors[rand.nextInt(instructors.length)];
             String day = days[rand.nextInt(days.length)];
-
             String start = times[rand.nextInt(times.length)];
             int startHour = Integer.parseInt(start.split(":")[0]);
-            String end = String.format("%02d:00", Math.min(startHour + 1, 23));
+            String endHourStr;
+            if(startHour == 12) endHourStr = "01:00";
+            else endHourStr = String.format("%02d:00", (startHour + 1) % 12 == 0 ? 12 : (startHour + 1) % 12);
+            String end = endHourStr;
 
             //Enforce one department per instructor
             if(instructorDepartments.containsKey(instructor)) {
@@ -78,6 +80,16 @@ public class SchedulerSystem {
         }
 
         System.out.println("Loaded " + courses.size() + " courses successfully!");
+    }
+
+    public static String formatTime12(String time) {
+        String[] parts = time.split(":");
+        int hour = Integer.parseInt(parts[0]);
+        String minute = parts[1];
+        String suffix = (hour >= 12) ? "PM" : "AM";
+        hour = hour % 12;
+        if (hour == 0) hour = 12;
+        return String.format("%02d:%s %s", hour, minute, suffix);
     }
 
     public ArrayList<Course> getCourses() {
