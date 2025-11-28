@@ -15,17 +15,24 @@ public class SchedulerController {
 
 	private void attachEvents() {
 		view.getStudentButton().addActionListener(e -> {
-			String id = view.getIdField().getText();
-			String name = view.getNameField().getText();
+			String id = view.getIdField().getText().trim();
+			String name = view.getNameField().getText().trim();
+
+			if(id.length() != 6) {
+				JOptionPane.showMessageDialog(view, "Student ID must be exactly 6 characters.", "Invalid ID", JOptionPane.ERROR_MESSAGE);
+				return;
+			}
 			
-			if(id.isEmpty() || name.isEmpty()) {
-				JOptionPane.showMessageDialog(null, "Please enter ID and Name.");
+			if(name.isEmpty()) {
+				JOptionPane.showMessageDialog(view, "Name cannot be empty.", "Invalid Name", JOptionPane.ERROR_MESSAGE);
 				return;
 			}
 
 			Student student = system.findStudent(id);
 			if(student == null) {
-				student = new Student(name, id);
+				student = new Student();
+				student.setId(id);
+				student.setName(name);
 				system.addStudent(student);
 			}
 
@@ -33,11 +40,11 @@ public class SchedulerController {
 		});
 
 		view.getAdminButton().addActionListener(e -> {
-			String id = view.getIdField().getText();
-			String name = view.getNameField().getText();
+			String id = view.getIdField().getText().trim();
+			String name = view.getNameField().getText().trim();
 			
 			if(id.isEmpty() || name.isEmpty()) {
-				JOptionPane.showMessageDialog(null, "Please enter ID and Name.");
+				JOptionPane.showMessageDialog(view, "Please enter ID and Name.");
 				return;
 			}
 

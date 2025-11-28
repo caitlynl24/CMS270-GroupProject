@@ -23,10 +23,9 @@ public class SchedulerView extends JFrame {
 		setTitle("Course Scheduler System");
 		setSize(600, 500);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		
 		buildHomePanel();
-		mainPanel.add(homePanel, "HOME");
 
+		mainPanel.add(homePanel, "HOME");
 		add(mainPanel);
 		setVisible(true);
 	}
