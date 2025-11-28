@@ -1,6 +1,11 @@
 package finalProject;
 
 public class Admin extends Person implements CourseInterface {
+
+    public Admin() {}
+    public Admin(String name, String id) {
+        super(name, id);
+    }
 	
 	// Override the CourseInterface functions for specific admin use
     @Override

@@ -3,6 +3,11 @@ package finalProject;
 public class Student extends Person implements CourseInterface {
     private Schedule schedule = new Schedule();
 
+    public Student() {}
+    public Student(String name, String id) {
+        super(name, id);
+    }
+
     @Override
     public void addCourse(Course course) {
         if(course.isFull()) {
