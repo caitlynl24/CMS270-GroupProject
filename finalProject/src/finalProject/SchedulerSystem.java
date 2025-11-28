@@ -31,7 +31,7 @@ public class SchedulerSystem {
 
         String[] prefixes = deptTitles.keySet().toArray(new String[0]);
         String[] instructors = {"D Roe", "A Hope", "A Fearing", "P Rogers", "V Alves", "T Loch", "M Fuse", "E Yook", "M Garcia", "R Winter", "D Myers", "V Summet", "M Rice", "Y Bing", "J Jones", "B Boles", "C Strom", "K Shi", "S Boyd", "M Anderson", "M Breckling", "S Kim", "M McLaren", "J Liu", "J Queen", "L Held", "T Staff", "M DiQuattro"};
-        String[] days = {"M", "T", "W", "R", "F"};
+        String[][] days = {{"M", "W", "F"}, {"T", "R"}};
         String[] times = {"08:00", "09:00", "10:00", "11:00", "12:00", "01:00", "02:00", "03:00", "04:00"};
 
         int courseCounter = 100;
@@ -42,7 +42,9 @@ public class SchedulerSystem {
             String[] titles = deptTitles.get(prefix);
             String title = titles[rand.nextInt(titles.length)];
             String instructor = instructors[rand.nextInt(instructors.length)];
-            String day = days[rand.nextInt(days.length)];
+            
+            String[] chosenPattern = days[rand.nextInt(days.length)];
+            String day = chosenPattern[rand.nextInt(chosenPattern.length)];
 
             String start = times[rand.nextInt(times.length)];
             int startHour = Integer.parseInt(start.split(":")[0]);
