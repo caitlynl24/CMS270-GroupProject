@@ -4,40 +4,72 @@ import java.awt.*;
 import javax.swing.*;
 
 public class SchedulerView extends JFrame {
-	JLabel welcomeLabel = new JLabel("Welcome to the Course Scheduler System");
-	JLabel idLabel = new JLabel("ID:");
-	JLabel nameLabel = new JLabel("Name:");
-	JLabel choiceLabel = new JLabel("Select role:");
+	private JLabel welcomeLabel = new JLabel("Welcome to the Course Scheduler System");
+	private JLabel idLabel = new JLabel("ID:");
+	private JLabel nameLabel = new JLabel("Name:");
+	private JLabel choiceLabel = new JLabel("Select role:");
 	
-	JButton studentButton = new JButton("Student");
-	JButton adminButton = new JButton("Admin");
+	private JButton studentButton = new JButton("Student");
+	private JButton adminButton = new JButton("Admin");
 	
-	JTextField name = new JTextField(10);
-	JTextField id = new JTextField(10);
+	private JTextField name = new JTextField(10);
+	private JTextField id = new JTextField(10);
+
+	private JPanel mainPanel = new JPanel(new CardLayout());
+	private JPanel homePanel = new JPanel();
 	
 	public SchedulerView() {
 		// Create first page
 		setTitle("Course Scheduler System");
-		setSize(500, 500);
+		setSize(600, 500);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
+		buildHomePanel();
+		mainPanel.add(homePanel, "HOME");
+
+		add(mainPanel);
+		setVisible(true);
+	}
+
+	private void buildHomePanel() {
+		homePanel.setLayout(new GridBagLayout());
 		GridBagConstraints gbc = new GridBagConstraints();
 		
-		JPanel panel = new JPanel();
-		panel.setLayout(new GridBagLayout());
 		gbc.gridwidth = GridBagConstraints.REMAINDER;
-		gbc.insets = new Insets(30, 0, 0, 0);
+		gbc.insets = new Insets(10, 0, 0, 0);
 		
-		panel.add(welcomeLabel, gbc);
-		panel.add(idLabel);
-		panel.add(id, gbc);
-		panel.add(nameLabel);
-		panel.add(name, gbc);
-		panel.add(choiceLabel, gbc);
-		panel.add(studentButton, gbc);
-		panel.add(adminButton, gbc);
-		
-		add(panel);
-		setVisible(true);
+		homePanel.add(welcomeLabel, gbc);
+		homePanel.add(idLabel);
+		homePanel.add(id, gbc);
+		homePanel.add(nameLabel);
+		homePanel.add(name, gbc);
+		homePanel.add(choiceLabel, gbc);
+		homePanel.add(studentButton, gbc);
+		homePanel.add(adminButton, gbc);
+	}
+
+	public JButton getStudentButton() {
+		return studentButton;
+	}
+
+	public JButton getAdminButton() {
+		return adminButton;
+	}
+
+	public JTextField getIdField() {
+		return id;
+	}
+
+	public JTextField getNameField() {
+		return name;
+	}
+
+	public JPanel getMainPanel() {
+		return mainPanel;
+	}
+
+	public void showPanel(String panelName) {
+		CardLayout cl = (CardLayout) mainPanel.getLayout();
+		cl.show(mainPanel, panelName);
 	}
 }
