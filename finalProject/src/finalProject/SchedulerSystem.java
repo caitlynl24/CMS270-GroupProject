@@ -56,10 +56,13 @@ public class SchedulerSystem {
             boolean conflict = false;
             for(Course c : courses) {
                 if(c.getInstructor().equals(instructor) &&
-                c.getDay().equals(day) &&
-                (c.getEndTime().compareTo(start) <= 0 || c.getStartTime().compareTo(end) >= 0)) {
-                    conflict = true;
-                    break;
+                c.getDay().equals(day)) {
+                    boolean overlap = !(c.getEndTime().compareTo(start) <= 0 ||
+                    c.getStartTime().compareTo(end) >= 0); 
+                    if(overlap) {
+                        conflict = true;
+                        break;
+                    }
                 }
             }
             if(conflict) continue;
