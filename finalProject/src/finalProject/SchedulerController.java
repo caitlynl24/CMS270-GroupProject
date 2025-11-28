@@ -190,6 +190,22 @@ public class SchedulerController {
 		int result = JOptionPane.showConfirmDialog(null, fields, "Add Course", JOptionPane.OK_CANCEL_OPTION);
 
 		if(result == JOptionPane.OK_OPTION) {
+			if(idField.getText().trim().isEmpty() || nameField.getText().trim().isEmpty() || instrField.getText().trim().isEmpty() ||
+			   dayField.getText().trim().isEmpty() || startField.getText().trim().isEmpty() || endField.getText().trim().isEmpty() ||
+			   creditsField.getText().trim().isEmpty() || capField.getText().trim().isEmpty()) {
+				JOptionPane.showMessageDialog(null, "All fields must be filled out.", "Incomplete Form", JOptionPane.ERROR_MESSAGE);
+				return;
+			}
+
+			int credits, capacity;
+			try {
+				credits = Integer.parseInt(creditsField.getText().trim());
+				capacity = Integer.parseInt(capField.getText().trim());
+			} catch (NumberFormatException e) {
+				JOptionPane.showMessageDialog(null, "Credits and Capacity must be valid integers.", "Invalid Input", JOptionPane.ERROR_MESSAGE);
+				return;
+			}
+
 			Course c = new Course(
 				idField.getText(),
 				nameField.getText(),
@@ -197,8 +213,8 @@ public class SchedulerController {
 				dayField.getText(),
 				startField.getText(),
 				endField.getText(),
-				Integer.parseInt(creditsField.getText()),
-				Integer.parseInt(capField.getText())
+				credits,
+				capacity
 			);
 
 			if(system.findCourse(c.getCourseId()) != null) {
@@ -214,7 +230,7 @@ public class SchedulerController {
 											existing.getStartTime().compareTo(c.getEndTime()) >= 0);
 					
 						if (overlap) {
-							JOptionPane.showMessageDialog(null, "Instructor has a scheduling conflict.");
+							JOptionPane.showMessageDialog(null, "Instructor has a scheduling conflict.", "Conflict Error", JOptionPane.ERROR_MESSAGE);
 							return;
 					}
 				}
@@ -224,7 +240,9 @@ public class SchedulerController {
 			system.addCourse(c);
 			tableModel.addCourse(c);
 
-			JOptionPane.showMessageDialog(null, "Course added successfully.");
+			JOptionPane.showMessageDialog(null, "Course added successfully.", "Success", JOptionPane.INFORMATION_MESSAGE);
+
+			System.out.println("Course added successfully.");
 		}
 	}
 }
