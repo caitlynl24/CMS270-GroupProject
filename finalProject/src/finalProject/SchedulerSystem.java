@@ -2,14 +2,42 @@ package finalProject;
 
 import java.util.*;
 
+/**
+ * Central model of the application that stores and manages all
+ * {@link Course}, {@link Student}, and {@link Admin} records.
+ * 
+ * <p>This class acts as the main data layer for the MVC architecture.
+ * It contains business logic for:
+ * <ul>
+ *      <li>Adding/removing/editing courses</li>
+ *      <li>Registering/dropping students</li>
+ *      <li>Searching courses, students, and admins by ID</li>
+ *      <li>Loading sample courses with conflict and department validation</li>
+ *      <li>Validating login for students and admins</li>
+ * </ul>
+ * 
+ * <p>The system DOES NOT handle GUI operations; the controller and view
+ * manage that layer. This class is strictly for data management.</p>
+ */
 public class SchedulerSystem {
+    
     private static final int ID_LENGTH = 6;
 
-    private ArrayList<Student> students = new ArrayList<>();
-    private ArrayList<Admin> admins = new ArrayList<>();
-    private ArrayList<Course> courses = new ArrayList<>();
-    private HashMap<String, String> instructorDepartments = new HashMap<>();
+    private final ArrayList<Student> students = new ArrayList<>();
+    private final ArrayList<Admin> admins = new ArrayList<>();
+    private final ArrayList<Course> courses = new ArrayList<>();
+    private final HashMap<String, String> instructorDepartments = new HashMap<>();
 
+    // ----------------------------------------
+    //               Data Loading
+    // ----------------------------------------
+
+    /**
+     * Generates and loads 100 random courses into the system with:
+     * - department enforcement per instructor
+     * - no schedule conflicts for instructors
+     * - random days, times, credits, and capacities
+     */
     public void loadSampleData() {
         Random rand = new Random();
 
@@ -45,20 +73,16 @@ public class SchedulerSystem {
             String day = days[rand.nextInt(days.length)];
             String start = times[rand.nextInt(times.length)];
             int startHour = Integer.parseInt(start.split(":")[0]);
-            String endHourStr;
-            if(startHour == 12) endHourStr = "01:00";
-            else endHourStr = String.format("%02d:00", (startHour + 1) % 12 == 0 ? 12 : (startHour + 1) % 12);
-            String end = endHourStr;
+            String end = String.format("%02d:00", (startHour % 12) + 1);
 
             //Enforce one department per instructor
             if(instructorDepartments.containsKey(instructor)) {
-                String dept = instructorDepartments.get(instructor);
-                if(!dept.equals(prefix)) continue; //Skip course
+                if(!instructorDepartments.get(instructor).equals(prefix)) continue;
             } else {
                 instructorDepartments.put(instructor, prefix);
             }
 
-            //Prevent instructor from teaching two courses at the same time
+            //Prevent instructor from teaching overlapping courses
             boolean conflict = false;
             for(Course c : courses) {
                 if(c.getInstructor().equals(instructor) &&
@@ -78,10 +102,18 @@ public class SchedulerSystem {
 
             courses.add(new Course(courseId, title, instructor, day, start, end, credits, capacity));
         }
-
-        System.out.println("Loaded " + courses.size() + " courses successfully!");
     }
 
+    // ----------------------------------------
+    //               Utilities
+    // ----------------------------------------
+
+    /**
+     * Converts a 24-hour time string (HH:mm) to 12-hour format with AM/PM.
+     * 
+     * @param time 24-hour format time string
+     * @return formatted 12-hour time string
+     */
     public static String formatTime12(String time) {
         String[] parts = time.split(":");
         int hour = Integer.parseInt(parts[0]);
@@ -92,46 +124,51 @@ public class SchedulerSystem {
         return String.format("%02d:%s %s", hour, minute, suffix);
     }
 
+    // ----------------------------------------
+    //               Course Methods
+    // ----------------------------------------
+
+    // Returns a list of all courses.
     public ArrayList<Course> getCourses() {
         return courses;
     }
 
-    public Student findStudent(String id) {
-        for (Student s : students) {
-            if (s.getId() != null && s.getId().equals(id)) {
-                return s;
-            }
-        }
-        return null;
-    }
-
-    public Admin findAdmin(String id) {
-        for (Admin a : admins) {
-            if (a.getId() != null && a.getId().equals(id)) {
-                return a;
-            }
-        }
-        return null;
-    }
-
+    // Finds a course by its ID.
     public Course findCourse(String id) {
         for (Course c : courses) {
-            if(c.getCourseId().equalsIgnoreCase(id)) {
-                return c;
-            }
+            if(c.getCourseId().equalsIgnoreCase(id)) return c;
         }
         return null;
     }
 
+    // Adds a course.
+    public void addCourse(Course c) {
+        courses.add(c);
+    }
+
+    //Removes a course.
+    public void removeCourse(Course c) {
+        courses.remove(c);
+    }
+
+    // ----------------------------------------
+    //               Student Methods
+    // ----------------------------------------
+
+    // Finds a student by ID.
+    public Student findStudent(String id) {
+        for (Student s : students) {
+            if (s.getId() != null && s.getId().equals(id)) return s;
+        }
+        return null;
+    }
+
+    // Adds a student with ID validation.
     public void addStudent(Student s) {
         try {
-            if(s.getId().length() != ID_LENGTH) {
-                throw new IllegalArgumentException("Invalid ID length.");
-            }
+            if(s.getId().length() != ID_LENGTH) throw new IllegalArgumentException("Invalid ID length.");
             for(Student existing : students) {
-                if(existing.getId().equals(s.getId())) {
-                    throw new DuplicatedIdException("Duplicate student ID: " + s.getId());
-                }
+                if(existing.getId().equals(s.getId())) throw new DuplicatedIdException("Duplicate student ID: " + s.getId());
             }
             students.add(s);
         } catch(DuplicatedIdException e) {
@@ -141,15 +178,24 @@ public class SchedulerSystem {
         }
     }
 
+    // ----------------------------------------
+    //               Admin Methods
+    // ----------------------------------------
+
+    // Finds an admin by ID.
+    public Admin findAdmin(String id) {
+        for (Admin a : admins) {
+            if (a.getId() != null && a.getId().equals(id)) return a;
+        }
+        return null;
+    }
+
+    // Adds an admin with ID validation.
     public void addAdmin(Admin a) {
         try {
-            if(a.getId().length() != ID_LENGTH) {
-                throw new IllegalArgumentException("Invalid ID length.");
-            }
+            if(a.getId().length() != ID_LENGTH) throw new IllegalArgumentException("Invalid ID length.");
             for(Admin existing : admins) {
-                if(existing.getId().equals(a.getId())) {
-                    throw new DuplicatedIdException("Duplicate admin ID: " + a.getId());
-                }
+                if(existing.getId().equals(a.getId())) throw new DuplicatedIdException("Duplicate admin ID: " + a.getId());
             }
             admins.add(a);
         } catch(DuplicatedIdException e) {
@@ -159,19 +205,20 @@ public class SchedulerSystem {
         }
     }
 
-    public void addCourse(Course c) {
-        courses.add(c);
-    }
+    // ----------------------------------------
+    //               Login Methods
+    // ----------------------------------------
 
-    public void removeCourse(Course c) {
-        courses.remove(c);
-    }
-
+    /**
+     * Validates a login ID and returns the corresponding Person.
+     * Can be a Student or Admin.
+     * 
+     * @param id login ID
+     * @return Person object if found, null otherwise
+     */
     public Person validateLogin(String id) {
         Person p = findStudent(id);
-        if (p == null) {
-            p = findAdmin(id);
-        }
+        if (p == null) p = findAdmin(id);
         return p;
     }
 }

@@ -1,25 +1,46 @@
 package finalProject;
 
+/**
+ * Utility class containing input validation methods used throughout
+ * the controller and view layers.
+ * 
+ * <p>Supports validation for:
+ * <ul>
+ *      <li>Course ID format (e.g., CMS230)</li>
+ *      <li>Time format (HH:mm, 24-hour)</li>
+ *      <li>Non-empty string fields</li>
+ * </ul>
+ */
 public class InputValidator {
 	
-	// Ensuring course ID is in proper formatting
-    public static boolean validateCourseId(String id) {
-        return id != null && id.matches("[A-Z]{3}\\d{3}");
+	/**
+     * Validates that a course ID is in the format:
+     * THREE LETTERS + THREE DIGITS
+     * 
+     * @param id course ID string
+     * @return true if valid
+     */
+    public static boolean isValidateCourseId(String id) {
+        return id != null && id.matches("[A-Za-z]{3}\\d{3}");
     }
 
-	// Ensuring course time is in proper formatting
-    public static boolean validateTimeFormat(String time) {
+	/**
+     * Validates time in 24-hour format HH:mm
+     * 
+     * @param time the time string
+     * @return true if valid
+     */
+    public static boolean isValidateTime(String time) {
         return time != null && time.matches("([01]?\\d|2[0-3]):[0-5]\\d");
     }
 
-	// Ensuring specified time range is valid
-    public static boolean validateTimeRange(String start, String end) {
-        if(!validateTimeFormat(start) || !validateTimeFormat(end)) return false;
-        return start.compareTo(end) < 0; //End must be after start
-    }
-
-	// Ensures a non-empty input string
-    public static boolean validateNonEmpty(String input) {
-        return input != null && !input.trim().isEmpty();
+	/**
+     * Checks that the provided string is not null or empty.
+     * 
+     * @param value the input string
+     * @return true if non-empty
+     */
+    public static boolean notEmpty(String value) {
+        return value != null && !value.trim().isEmpty();
     }
 }
