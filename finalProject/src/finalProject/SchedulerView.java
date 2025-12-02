@@ -47,7 +47,7 @@ public class SchedulerView extends JFrame {
 	 */
 	public SchedulerView() {
 		setTitle("Course Scheduler System");
-		setSize(650, 550);
+		setSize(1280, 720);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
 		styleComponents();
@@ -67,19 +67,13 @@ public class SchedulerView extends JFrame {
 		welcomeLabel.setFont(new Font("SansSerif", Font.BOLD, 20));
 		welcomeLabel.setForeground(BLUE);
 
-		studentButton.setBackground(BLUE);
-		studentButton.setForeground(Color.WHITE);
 		studentButton.setFocusPainted(false);
-
-		adminButton.setBackground(GOLD);
-		adminButton.setForeground(Color.BLACK);
 		adminButton.setFocusPainted(false);
 	}
 
 	/**
 	 * Builds the home/login panel layout, including:
 	 * <ul>
-	 *   <li>Logo (RLogo component)</li>
 	 *   <li>Welcome label</li>
 	 *   <li>ID and Name fields</li>
 	 *   <li>Student/Admin buttons</li>
@@ -94,9 +88,6 @@ public class SchedulerView extends JFrame {
 		GridBagConstraints gbc = new GridBagConstraints();
 		gbc.gridwidth = GridBagConstraints.REMAINDER;
 		gbc.insets = new Insets(10, 0, 10, 0);
-		
-		//Add custom R logo rendering
-		homePanel.add(new RLogo(), gbc);
 
 		homePanel.add(welcomeLabel, gbc);
 		homePanel.add(idLabel, gbc);

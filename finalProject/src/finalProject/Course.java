@@ -120,6 +120,7 @@ public class Course {
     // -------------- Getters --------------
 
     public int getCredits() { return credits; }
+    public int getCapacity() { return capacity; }
     public String getCourseId() { return courseId; }
     public String getCourseName() { return courseName; }
     public String getInstructor() { return instructor; }

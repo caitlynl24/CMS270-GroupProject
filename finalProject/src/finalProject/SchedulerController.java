@@ -119,7 +119,7 @@ public class SchedulerController {
 		JLabel header = new JLabel("Student: " + student.getName(), SwingConstants.CENTER);
 		panel.add(header, BorderLayout.NORTH);
 
-		CourseTableModel tableModel = new CourseTableModel(system.getCourses());
+		CoursesTableModel tableModel = new CoursesTableModel(system.getCourses());
 		JTable courseTable = new JTable(tableModel);
 		courseTable.setAutoCreateRowSorter(true);
 
@@ -204,7 +204,7 @@ public class SchedulerController {
 		JLabel header = new JLabel("Admin: " + admin.getName(), SwingConstants.CENTER);
 		panel.add(header, BorderLayout.NORTH);
 
-		CourseTableModel tableModel = new CourseTableModel(system.getCourses());
+		CoursesTableModel tableModel = new CoursesTableModel(system.getCourses());
 		JTable courseTable = new JTable(tableModel);
 		courseTable.setAutoCreateRowSorter(true);
 
@@ -260,7 +260,7 @@ public class SchedulerController {
 	 * @param admin the admin creating the course
 	 * @param tableModel table model to update upon successful course creation
 	 */
-	private void showAddCourseDialog(Admin admin, CourseTableModel tableModel) {
+	private void showAddCourseDialog(Admin admin, CoursesTableModel tableModel) {
 		
 		JTextField idField = new JTextField();
 		JTextField nameField = new JTextField();
