@@ -149,7 +149,6 @@ public class SchedulerController {
 				int modelRow = courseTable.convertRowIndexToModel(selectedRow);
 				Course selectedCourse = tableModel.getCourseAt(modelRow);
 				student.addCourse(selectedCourse);
-				tableModel.fireTableDataChanged();
 			} else {
 				JOptionPane.showMessageDialog(view, 
 					"Please select a course to add.");
@@ -165,7 +164,6 @@ public class SchedulerController {
 				int modelRow = courseTable.convertRowIndexToModel(selectedRow);
 				Course selectedCourse = tableModel.getCourseAt(modelRow);
 				student.removeCourse(selectedCourse);
-				tableModel.fireTableDataChanged();
 			} else {
 				JOptionPane.showMessageDialog(view, 
 					"Please select a course to remove.");
@@ -240,6 +238,7 @@ public class SchedulerController {
 				system.removeCourse(selectedCourse);
 				admin.removeCourse(selectedCourse);
 				tableModel.removeCourse(selectedCourse);
+				tableModel.fireTableDataChanged();
 
 			} else {
 				JOptionPane.showMessageDialog(view, "Please select a course to remove.");
@@ -357,7 +356,7 @@ public class SchedulerController {
 
 			admin.addCourse(c);
 			system.addCourse(c);
-			tableModel.addCourse(c);
+			tableModel.fireTableDataChanged();
 
 			JOptionPane.showMessageDialog(null, 
 				"Course added successfully.", 
